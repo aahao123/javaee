@@ -37,6 +37,7 @@ public class CustLoginTeacherValue {
      * @throws IOException
      */
     public void custLogin(String username, String password) throws IOException {
+        System.out.println("＋＋＋＋＋＋＋＋＋＋评估开始＋＋＋＋＋＋＋＋＋＋");
         List<BasicNameValuePair> formParams = new ArrayList<BasicNameValuePair>();
         formParams.add(new BasicNameValuePair("role", "student"));
         formParams.add(new BasicNameValuePair("username", username));
@@ -44,6 +45,8 @@ public class CustLoginTeacherValue {
         UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParams, "UTF-8");
         if (post(loginUrl, formParams).contains("/teachweb/index1.aspx")) {
             System.out.println("登陆成功");
+        }else {
+            System.out.println("登陆失败");
         }
         teacherValue();
     }
@@ -57,6 +60,7 @@ public class CustLoginTeacherValue {
         for (String teacherNo : allTeacherNo()) {
             intoTeacherpage(teacherNo, VIEWSTATE);
         }
+        System.out.println("＋＋＋＋＋＋＋＋＋＋评估结束＋＋＋＋＋＋＋＋＋＋");
     }
 
     /**
@@ -113,7 +117,6 @@ public class CustLoginTeacherValue {
         formParams.add(new BasicNameValuePair("__EVENTARGUMENT", ""));
 
         submitTeacherData(post(teacherValueUrl, formParams));
-
     }
 
     /**
@@ -145,7 +148,6 @@ public class CustLoginTeacherValue {
                 score += Integer.parseInt(radioValue);
             }
         }
-
 
         formParams.add(new BasicNameValuePair("__EVENTTARGET", "m_ddlTeacher"));
         formParams.add(new BasicNameValuePair("_ctl45", String.valueOf(score)));
