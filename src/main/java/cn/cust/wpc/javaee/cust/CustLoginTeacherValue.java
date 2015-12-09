@@ -15,9 +15,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by wpc on 15/12/9.
@@ -45,7 +43,7 @@ public class CustLoginTeacherValue {
         UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParams, "UTF-8");
         if (post(loginUrl, formParams).contains("/teachweb/index1.aspx")) {
             System.out.println("登陆成功");
-        }else {
+        } else {
             System.out.println("登陆失败");
         }
         teacherValue();
@@ -138,14 +136,18 @@ public class CustLoginTeacherValue {
         String radioName = "";
         String radioValue = "";
         int score = 0;
-        Map<String, String> map = new HashMap<>();
         for (int i = 0; i < radios.size(); i++) {
             radioName = radios.get(i).attr("name");
             radioValue = radios.get(i).attr("value");
-            if (!map.containsKey(radioName)) {
-                map.put(radioName, radioValue);
+
+            if (formParams.isEmpty()) {
                 formParams.add(new BasicNameValuePair(radioName, radioValue));
                 score += Integer.parseInt(radioValue);
+            } else {
+                if (!formParams.get(formParams.size() - 1).getName().equals(radioName)) {
+                    formParams.add(new BasicNameValuePair(radioName, radioValue));
+                    score += Integer.parseInt(radioValue);
+                }
             }
         }
 
