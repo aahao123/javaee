@@ -14,6 +14,7 @@
           <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.8.3" />
           <element id="library" level="project" name="Maven: javamail:javamail:1.4.5" />
           <element id="library" level="project" name="Maven: javax.activation:activation:1.1.1" />
+          <element id="library" level="project" name="Maven: jstl:jstl:1.2" />
         </element>
       </element>
       <element id="directory" name="META-INF">
