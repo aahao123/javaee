@@ -8,16 +8,19 @@
     <name>javaee Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <dependencies>
+        <!-- httpclient-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.1</version>
         </dependency>
+        <!-- 解析html网页-->
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.8.3</version>
         </dependency>
+        <!-- javamail -->
         <dependency>
             <groupId>javamail</groupId>
             <artifactId>javamail</artifactId>
@@ -27,11 +30,19 @@
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
-        </dependency><dependency>
-        <groupId>jstl</groupId>
-        <artifactId>jstl</artifactId>
-        <version>1.2</version>
-    </dependency>
+        </dependency>
+        <!-- jstl 标签-->
+        <dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+        <!-- 解析xml数据-->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>javaee</finalName>
