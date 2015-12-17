@@ -18,7 +18,18 @@ import java.util.List;
 public class SimulationWxLogin {
 
     private HttpClient client = new DefaultHttpClient();
+    private HttpPost post;
 
+    public SimulationWxLogin(){
+        post = new HttpPost();
+        post.setHeader("Referer", "https://mp.weixin.qq.com/");
+    }
+
+    /**
+     * 模拟登陆微信公众平台
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     public void weiXinLogin() throws IOException, URISyntaxException {
 
         List<BasicNameValuePair> params = new ArrayList<>();
@@ -27,11 +38,16 @@ public class SimulationWxLogin {
         params.add(new BasicNameValuePair("f", "json"));
         params.add(new BasicNameValuePair("imgcode", ""));
 
-        HttpPost post = new HttpPost();
-        post.setHeader("Referer", "https://mp.weixin.qq.com/");
-
         String loginUrl = "https://mp.weixin.qq.com/cgi-bin/login";
-        HttpEntity entity = HttpUtil.post(post, loginUrl, params);
+        HttpEntity entity = HttpUtil.post(client,post, loginUrl, params);
+        String content = HttpUtil.entityToString(entity);
+        System.out.println(content);
+        imageTextPage(post);
+    }
+
+    public void imageTextPage(HttpPost post) throws IOException, URISyntaxException {
+        String url = "https://mp.weixin.qq.com/cgi-bin/appmsg?begin=0&count=10&t=media/appmsg_list&type=10&action=list_card&lang=zh_CN&token=2051577624";
+        HttpEntity entity = HttpUtil.post(client,post, url, null);
         String content = HttpUtil.entityToString(entity);
         System.out.println(content);
     }

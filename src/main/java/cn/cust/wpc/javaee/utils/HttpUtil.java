@@ -5,7 +5,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
@@ -19,8 +18,6 @@ import java.util.List;
  */
 public class HttpUtil {
 
-    private static HttpClient client = new DefaultHttpClient();
-
     public void get() {
     }
 
@@ -33,7 +30,7 @@ public class HttpUtil {
      * @throws URISyntaxException
      * @throws IOException
      */
-    public static HttpEntity post(HttpPost post, String url, List<BasicNameValuePair> params) throws URISyntaxException, IOException {
+    public static HttpEntity post(HttpClient client,HttpPost post, String url, List<BasicNameValuePair> params) throws URISyntaxException, IOException {
         if (post == null) {
             post = new HttpPost();
         }
