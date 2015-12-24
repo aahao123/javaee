@@ -1,7 +1,7 @@
 package cn.cust.wpc.javaee.weixin;
 
 import cn.cust.wpc.javaee.utils.HttpUtil;
-import cn.cust.wpc.javaee.weixin.domain.*;
+import cn.cust.wpc.javaee.weixin.domain.ImageText.*;
 import net.sf.ezmorph.Morpher;
 import net.sf.ezmorph.MorpherRegistry;
 import net.sf.ezmorph.bean.BeanMorpher;
@@ -47,16 +47,15 @@ public class SimulationWxLogin {
         params.add(new BasicNameValuePair("imgcode", ""));
 
         String loginUrl = "https://mp.weixin.qq.com/cgi-bin/login";
-        HttpEntity entity = HttpUtil.post(client,post, loginUrl, params);
+        HttpEntity entity = HttpUtil.post(post, loginUrl, params);
         String content = HttpUtil.entityToString(entity);
-//        System.out.println(content);
         String token = content.substring(content.indexOf("token")+6,content.length()-2);
         imageTextPage(post,token);
     }
 
     public void imageTextPage(HttpPost post,String token) throws IOException, URISyntaxException {
         String url = "https://mp.weixin.qq.com/cgi-bin/appmsg?begin=0&count=10&t=media/appmsg_list&type=10&action=list_card&lang=zh_CN&token="+token;
-        HttpEntity entity = HttpUtil.post(client,post, url, null);
+        HttpEntity entity = HttpUtil.post(post, url, null);
         String content = HttpUtil.entityToString(entity);
 
         Map classMap = new HashMap();

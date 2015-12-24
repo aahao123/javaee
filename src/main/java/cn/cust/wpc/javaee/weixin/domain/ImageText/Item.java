@@ -1,4 +1,4 @@
-package cn.cust.wpc.javaee.weixin.domain;
+package cn.cust.wpc.javaee.weixin.domain.ImageText;
 
 import java.util.*;
 
