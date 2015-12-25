@@ -7,6 +7,14 @@ public class ClickButton extends Button {
     private String key;
     private String type = "click";
 
+    public ClickButton() {
+    }
+
+    public ClickButton(String name,String key) {
+        super(name);
+        this.key = key;
+    }
+
     public String getKey() {
         return key;
     }

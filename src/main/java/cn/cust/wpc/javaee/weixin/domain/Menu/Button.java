@@ -6,6 +6,13 @@ package cn.cust.wpc.javaee.weixin.domain.Menu;
 public class Button {
     private String name;
 
+    public Button() {
+    }
+
+    public Button(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
