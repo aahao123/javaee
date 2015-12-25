@@ -1,7 +1,7 @@
 package cn.cust.wpc.javaee.weixin;
 
 import cn.cust.wpc.javaee.utils.HttpUtil;
-import cn.cust.wpc.javaee.weixin.domain.imagetext1.*;
+import cn.cust.wpc.javaee.weixin.domain.imagetext.*;
 import net.sf.ezmorph.Morpher;
 import net.sf.ezmorph.MorpherRegistry;
 import net.sf.ezmorph.bean.BeanMorpher;
