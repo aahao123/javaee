@@ -14,6 +14,11 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.1</version>
         </dependency>
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+        </dependency>
         <!-- 解析html网页-->
         <dependency>
             <groupId>org.jsoup</groupId>

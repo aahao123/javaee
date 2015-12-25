@@ -54,35 +54,4 @@ public class MenuUtil {
         HttpEntity entity = HttpUtil.get(null, url);
         return HttpUtil.entityToString(entity);
     }
-
-//    public static void main(String[] args) throws IOException, URISyntaxException {
-
-//        ClickButton button1 = new ClickButton("今日歌曲","12121");
-//        ViewButton button2 = new ViewButton("搜索","http://www.baidu.com");
-//        ViewButton button3 = new ViewButton("视频","http://v.qq.com");
-//        ClickButton button4 = new ClickButton("赞一下我们","12131");
-//
-//        List<Button> buttons = new ArrayList<>();
-//
-//        SubMenu subMenu = new SubMenu("菜单");
-//        List<Button> subbuttons = new ArrayList<>();
-//        subbuttons.add(button2);
-//        subbuttons.add(button3);
-//        subbuttons.add(button4);
-//        subMenu.setSub_button(subbuttons);
-//
-//        Menu menu = new Menu();
-//        buttons.add(button1);
-//        buttons.add(subMenu);
-//        menu.setButton(buttons);
-//
-//        System.out.println(MenuUtil.createMenu(menu));
-
-
-//        System.out.println(MenuUtil.getMenu());
-
-//        System.out.println(MenuUtil.deleteMenu());
-
-
-//    }
 }

@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 /**
- * Created by wpc on 15/12/25.
+ * AccessToken 的工厂类
  */
 public class AccessTokenFactory {
-    private String appid = "wxeb0835681c3e48b5";
-    private String appsecret = "8d7b7aeebc5d9ab2a6b2c3f333f3eba1";
+//    private String appid = "wxeb0835681c3e48b5";
+    private String appid = "wx4a152626b81b2988";
+//    private String appsecret = "8d7b7aeebc5d9ab2a6b2c3f333f3eba1";
+    private String appsecret = "01aec0676a74b1268df498b0eff13c25";
 
     public AccessTokenFactory() {
     }

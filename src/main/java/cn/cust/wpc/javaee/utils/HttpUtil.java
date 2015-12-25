@@ -1,6 +1,10 @@
 package cn.cust.wpc.javaee.utils;
 
 import net.sf.json.JSONObject;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -12,6 +16,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,6 +33,7 @@ public class HttpUtil {
 
     /**
      * 发送 get 请求
+     *
      * @param get
      * @param url
      * @return
@@ -35,7 +41,7 @@ public class HttpUtil {
      * @throws IOException
      */
     public static HttpEntity get(HttpGet get, String url) throws URISyntaxException, IOException {
-        if(get == null){
+        if (get == null) {
             get = new HttpGet();
         }
 
@@ -72,6 +78,7 @@ public class HttpUtil {
 
     /**
      * post 请求 发送JSON 数据
+     *
      * @param post
      * @param url
      * @param jsonObject
@@ -84,13 +91,25 @@ public class HttpUtil {
             post = new HttpPost();
         }
         post.setURI(new URL(url).toURI());
-        if(jsonObject != null){
-            StringEntity stringEntity = new StringEntity(jsonObject.toString(),"UTF-8");
+        if (jsonObject != null) {
+            StringEntity stringEntity = new StringEntity(jsonObject.toString(), "UTF-8");
             stringEntity.setContentType("application/json");
             post.setEntity(stringEntity);
         }
         response = client.execute(post);
         return response.getEntity();
+    }
+
+    public static String postFile(String url, File file) throws IOException {
+        PostMethod postMethod = new PostMethod(url);
+        FilePart fp = new FilePart("filedata", file);
+        Part[] parts = {fp};
+        MultipartRequestEntity multipartRequestEntity = new MultipartRequestEntity(parts, postMethod.getParams());
+        postMethod.setRequestEntity(multipartRequestEntity);
+        org.apache.commons.httpclient.HttpClient client = new org.apache.commons.httpclient.HttpClient();
+        client.getHttpConnectionManager().getParams().setConnectionTimeout(50000);// 设置连接时间
+        client.executeMethod(postMethod);
+        return postMethod.getResponseBodyAsString();
     }
 
     /**
@@ -101,7 +120,7 @@ public class HttpUtil {
      * @throws IOException
      */
     public static String entityToString(HttpEntity entity) throws IOException {
-        return EntityUtils.toString(entity,"UTF-8");
+        return EntityUtils.toString(entity, "UTF-8");
     }
 
 }
