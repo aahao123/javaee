@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:p="http://www.springframework.org/schema/p"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
     <bean id="duke" class="cn.cust.wpc.javaee.springinaction.chapter2.Juggler">
         <constructor-arg name="beanBags" value="15"></constructor-arg>
     </bean>
@@ -10,5 +13,67 @@
     <!-- 通过工厂方法创建bean-->
     <bean id="theStage" class="cn.cust.wpc.javaee.springinaction.chapter2.Stage" factory-method="getInstance">
     </bean>
+
+    <!--
+        Bean的初始化和销毁操作
+    -->
+    <bean id="auditorium" class="cn.cust.wpc.javaee.springinaction.chapter2.Auditorium"
+          init-method="turnOnLights"
+          destroy-method="trunOffLights">
+    </bean>
+
+    <bean id="saxophone" class="cn.cust.wpc.javaee.springinaction.chapter2.Saxophone"></bean>
+
+    <bean id="kneey" class="cn.cust.wpc.javaee.springinaction.chapter2.Instrumentalist">
+        <property name="song" value="BeiJingBeiJing"></property>
+        <!--<property name="instrument" ref="saxophone"></property>-->
+        <property name="instrument">
+            <bean class="cn.cust.wpc.javaee.springinaction.chapter2.Saxophone"></bean>
+        </property>
+    </bean>
+
+    <bean id="kneeyp" class="cn.cust.wpc.javaee.springinaction.chapter2.Instrumentalist" p:song="BeiJingBeiJing"
+          p:instrument-ref="saxophone"></bean>
+
+    <!-- 装配List、Set、Array集合-->
+    <bean id="hank" class="cn.cust.wpc.javaee.springinaction.chapter2.OneManBand">
+        <property name="instruments">
+            <list>
+                <ref bean="saxophone"></ref>
+                <ref bean="saxophone"></ref>
+                <ref bean="saxophone"></ref>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 装配Map集合-->
+    <bean id="hankmap" class="cn.cust.wpc.javaee.springinaction.chapter2.OneManBandMap">
+        <property name="instrumentMap">
+            <map>
+                <entry key="SAXOPHONE" value-ref="saxophone"></entry>
+            </map>
+        </property>
+    </bean>
+
+    <!-- 装配properties集合-->
+    <bean id="hankpro" class="cn.cust.wpc.javaee.springinaction.chapter2.OneManBandProperties">
+        <property name="instruments">
+            <props>
+                <prop key="GUITAR">guitar</prop>
+                <prop key="SAXOPHONE">saxophone</prop>
+                <prop key="CYMBAL">cymbal</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- 装配空值-->
+    <bean id="hanknull" class="cn.cust.wpc.javaee.springinaction.chapter2.OneManBandProperties">
+        <property name="instruments">
+            <null/>
+        </property>
+    </bean>
+
+
+
 
 </beans>

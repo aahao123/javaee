@@ -10,7 +10,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class Test {
     public static void main(String[] args){
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("spring/chapter2/chapter2.xml");
-        Performer performer = (Performer) applicationContext.getBean("duke");
+//        Performer performer = (Performer) applicationContext.getBean("duke");
+//        performer.perform();
+
+//        Performer performer = (Performer) applicationContext.getBean("kneey");
+//        performer.perform();
+
+        Performer performer = (Performer) applicationContext.getBean("kneeyp");
         performer.perform();
+
     }
 }
