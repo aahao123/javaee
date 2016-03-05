@@ -3,7 +3,9 @@ package cn.cust.wpc.javaee.mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
-import com.mongodb.client.*;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
@@ -21,8 +23,9 @@ public class Demo1 {
 
     static {
         ServerAddress serverAddress = new ServerAddress("127.0.0.1", 27017);
+//        ServerAddress serverAddress = new ServerAddress("10.151.11.4", 29017);
         List<MongoCredential> mongoCredentialList = new ArrayList<MongoCredential>();
-        mongoCredentialList.add(MongoCredential.createCredential("sa", "runoob", "sa".toCharArray()));
+        mongoCredentialList.add(MongoCredential.createCredential("bank", "bank_chanel", "bank1q2w3e".toCharArray()));
         mongoClient = new MongoClient(serverAddress, mongoCredentialList);
     }
 
@@ -125,9 +128,9 @@ public class Demo1 {
         String collectionName = "col";
         MongoDatabase mongoDatabase = mongoClient.getDatabase(dbName);
 
-        //添加数据
-//        Document document = new Document().append("title","mongoDB学习").append("by","pengchengwang");
-//        demo1.add(mongoDatabase,collectionName,document);
+//        添加数据
+        Document document = new Document().append("title","mongoDB学习").append("by","pengchengwang");
+        demo1.add(mongoDatabase,collectionName,document);
 
         //更新数据
 //        Bson oldBson = Filters.eq("by", "pengchengwang");
@@ -144,7 +147,7 @@ public class Demo1 {
 //        }
 
         //删除数据
-//        demo1.delete(mongoDatabase,collectionName, Filters.eq("by","pengchengwang"));
+//        demo1.delete(mongoDatabase,collectionName, Filters.eq("by", "pengchengwang"));
 
         //删除集合
 //        demo1.deleteCollection(mongoDatabase,collectionName);
