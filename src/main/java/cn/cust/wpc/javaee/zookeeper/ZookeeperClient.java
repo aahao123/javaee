@@ -21,6 +21,7 @@ public class ZookeeperClient {
         //  创建一个目录节点
         zooKeeper.create("/testRootPath", "testRootData".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
 
+
         //  创建一个子目录节点
         zooKeeper.create("/testRootPath/testChildPathOne", "testChildDataOne".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
         System.out.println(new String(zooKeeper.getData("/testRootPath", false, null)));
