@@ -1,7 +1,9 @@
 package cn.cust.wpc.javaee.weixin;
 
 import cn.cust.wpc.javaee.utils.HttpUtil;
+import cn.cust.wpc.javaee.weixin.domain.ImageText;
 import cn.cust.wpc.javaee.weixin.domain.imagetext.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.sf.ezmorph.Morpher;
 import net.sf.ezmorph.MorpherRegistry;
 import net.sf.ezmorph.bean.BeanMorpher;
@@ -13,6 +15,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -25,76 +28,106 @@ import java.util.Map;
  */
 public class SimulationWxLogin {
 
+    /**
+     * 微信公众平台登陆网址
+     */
+    private static final String LOGINURL = "https://mp.weixin.qq.com/cgi-bin/login";
+    /**
+     * 图文总量
+     */
+    private static int twTotal = 0;
+
     private HttpClient client = new DefaultHttpClient();
     private HttpPost post;
 
-    public SimulationWxLogin(){
+    public SimulationWxLogin() {
         post = new HttpPost();
         post.setHeader("Referer", "https://mp.weixin.qq.com/");
     }
 
     /**
      * 模拟登陆微信公众平台
+     *
+     * @param username 用户名
+     * @param password 加密之后的密码
      * @throws IOException
      * @throws URISyntaxException
      */
-    public void weiXinLogin() throws IOException, URISyntaxException {
+    public void weiXinLogin(String username, String password) throws IOException, URISyntaxException {
 
         List<BasicNameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("pwd", "88dfc7c9d2a8669e2f7d9e36130fd356"));
-        params.add(new BasicNameValuePair("username", "1195746619@qq.com"));
+        params.add(new BasicNameValuePair("pwd", password));
+        params.add(new BasicNameValuePair("username", username));
         params.add(new BasicNameValuePair("f", "json"));
         params.add(new BasicNameValuePair("imgcode", ""));
 
-        String loginUrl = "https://mp.weixin.qq.com/cgi-bin/login";
-        HttpEntity entity = HttpUtil.post(post, loginUrl, params);
+        HttpEntity entity = HttpUtil.post(post, LOGINURL, params);
         String content = HttpUtil.entityToString(entity);
-        String token = content.substring(content.indexOf("token")+6,content.length()-2);
-        imageTextPage(post,token);
+        String token = content.substring(content.indexOf("token") + 6, content.length() - 2);
+        readImageText(post, token);
     }
 
-    public void imageTextPage(HttpPost post,String token) throws IOException, URISyntaxException {
-        String url = "https://mp.weixin.qq.com/cgi-bin/appmsg?begin=0&count=10&t=media/appmsg_list&type=10&action=list_card&lang=zh_CN&token="+token;
-        HttpEntity entity = HttpUtil.post(post, url, null);
-        String content = HttpUtil.entityToString(entity);
+    /**
+     * 读取图文素材库
+     *
+     * @param post
+     * @param token
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    public void readImageText(HttpPost post, String token) throws IOException, URISyntaxException {
+        if (twTotal == 0) {
+            System.out.println("------------------------第零页-----------------------");
+            String url = "https://mp.weixin.qq.com/cgi-bin/appmsg?begin=0&count=10&t=media/appmsg_list&type=10&action=list_card&lang=zh_CN&token=" + token;
+            HttpEntity entity = HttpUtil.post(post, url, null);
+            String content = HttpUtil.entityToString(entity);
+            twTotalAndPages(content);
+            parseJsonTwItems(content);
+        }
 
-        Map classMap = new HashMap();
-        classMap.put("base_resp", BaseResp.class);
-        classMap.put("app_msg_info", AppMsgInfo.class);
-        classMap.put("file_cnt", FileCnt.class);
-        classMap.put("item", Item.class);
-        classMap.put("multi_item", MultiItem.class);
-
-        ImageTextJsonObject imageTextJsonObject = (ImageTextJsonObject) JSONObject.toBean(JSONObject.fromObject(content), ImageTextJsonObject.class, classMap);
-
-
-//        System.out.println(imageTextJsonObject);
-
-//        先往注册器中注册变换器，需要用到ezmorph包中的类
-        MorpherRegistry morpherRegistry = JSONUtils.getMorpherRegistry();
-        Morpher morpher = new BeanMorpher(Item.class,morpherRegistry);
-        morpherRegistry.registerMorpher(morpher);
-
-        List<Item> items = imageTextJsonObject.getApp_msg_info().getItem();
-        for(int i = 0;i<items.size();i++){
-            Item item = (Item) morpherRegistry.morph(Item.class,items.get(i));
-            System.out.println("标题："+item.getTitle());
-            System.out.println("描述："+item.getDigest());
-            System.out.println("图片url："+item.getImg_url());
-            System.out.println("跳转url："+item.getContent_url());
+        for (int i = 10; i < twTotal; i += 10) {
+            System.out.println("------------------------第" + (i / 10) + "页-----------------------");
+            String url = "https://mp.weixin.qq.com/cgi-bin/appmsg?begin=" + i + "&count=10&t=media/appmsg_list2&type=10&action=list_card&lang=zh_CN&token=" + token;
+            HttpEntity entity = HttpUtil.post(post, url, null);
+            String content = HttpUtil.entityToString(entity);
+            parseJsonTwItems(content);
         }
     }
 
-    public static void main(String[] args) {
+    /**
+     * 得到图文素材的总数量
+     *
+     * @param content
+     * @throws IOException
+     */
+    public void twTotalAndPages(String content) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.readValue(content, Map.class);
+        Map<String, Object> fileCnt = (Map<String, Object>) ((Map<String, Object>) map.get("app_msg_info")).get("file_cnt");
+        twTotal = (int) fileCnt.get("app_msg_cnt");
+    }
+
+    /**
+     * 得到每一页的图文素材列表
+     *
+     * @param content
+     * @throws IOException
+     */
+    public void parseJsonTwItems(String content) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.readValue(content, Map.class);
+        List<Object> tws = (List<Object>) ((Map<String, Object>) map.get("app_msg_info")).get("item");
+        for (int i = 0; i < tws.size(); i++) {
+            ImageText imageText = objectMapper.readValue(objectMapper.writeValueAsString(tws.get(i)), ImageText.class);
+            System.out.println(imageText.toString());
+        }
+    }
+
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        String username = "1195746619@qq.com";
+        String password = "88dfc7c9d2a8669e2f7d9e36130fd356";
         SimulationWxLogin simulationWxLogin = new SimulationWxLogin();
-        try {
-            simulationWxLogin.weiXinLogin();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-
+        simulationWxLogin.weiXinLogin(username, password);
     }
 
 }
