@@ -4,6 +4,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -14,6 +15,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +28,8 @@ import java.util.List;
 public class CustLoginTeacherValue {
 
     private HttpClient client = new DefaultHttpClient();
-    private static String loginUrl = "http://jwgl.cust.edu.cn/teachweb/Login.aspx";
+    private static String loginUrl = "http://jwgl.cust.edu.cn/teachwebsl/login.aspx";
+
     private static String teacherValueUrl = "http://jwgl.cust.edu.cn/teachweb/jspg/TeacherEvaluate.aspx";
     private String VIEWSTATE = null;
 
@@ -34,19 +40,42 @@ public class CustLoginTeacherValue {
      * @param password
      * @throws IOException
      */
-    public void custLogin(String username, String password) throws IOException {
+    public void custLogin(String username, String password) throws IOException, URISyntaxException {
         System.out.println("＋＋＋＋＋＋＋＋＋＋评估开始＋＋＋＋＋＋＋＋＋＋");
         List<BasicNameValuePair> formParams = new ArrayList<BasicNameValuePair>();
-        formParams.add(new BasicNameValuePair("role", "student"));
-        formParams.add(new BasicNameValuePair("username", username));
-        formParams.add(new BasicNameValuePair("password", password));
+        formParams.add(new BasicNameValuePair("Button1", "登录"));
+        formParams.add(new BasicNameValuePair("txtUserName", username));
+        formParams.add(new BasicNameValuePair("txtPassWord", password));
+        formParams.add(new BasicNameValuePair("__EVENTVALIDATION","/wEWBAK4vfWFDAKl1bKzCQK1qbSWCwKM54rGBg=="));
+        formParams.add(new BasicNameValuePair("__VIEWSTATE","/wEPDwUJMTQyNDg3OTM5ZGQ="));
         UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formParams, "UTF-8");
-        if (post(loginUrl, formParams).contains("/teachweb/index1.aspx")) {
+        String content = post(loginUrl, formParams);
+        System.out.println(content);
+
+
+        Document document = Jsoup.parse(content);
+        String newLoginUrl = document.getElementsByTag("a").attr("href");
+        System.out.println(newLoginUrl);
+
+        content = get(null, newLoginUrl);
+//        System.out.println(content);
+
+        if(content.contains("首 页")){
+            System.out.println("登陆成功");
+        }else{
+            System.out.println("登陆失败");
+        }
+//        teacherValue();
+
+        content = get(null,"http://jwgl.cust.edu.cn/teachweb/cjcx/StudentGrade.aspx");
+        System.out.println(content);
+
+        /*if (post(loginUrl, formParams).contains("/teachweb/index1.aspx")) {
             System.out.println("登陆成功");
         } else {
             System.out.println("登陆失败");
         }
-        teacherValue();
+        teacherValue();*/
     }
 
     /**
@@ -98,6 +127,25 @@ public class CustLoginTeacherValue {
         HttpResponse response = client.execute(post);
         HttpEntity result = response.getEntity();
         return EntityUtils.toString(result);
+    }
+
+    /**
+     * 发送 get 请求
+     *
+     * @param get
+     * @param url
+     * @return
+     * @throws URISyntaxException
+     * @throws IOException
+     */
+    public String get(HttpGet get, String url) throws URISyntaxException, IOException {
+        if (get == null) {
+            get = new HttpGet();
+        }
+        get.setURI(new URI(url));
+
+        HttpResponse response = client.execute(get);
+        return EntityUtils.toString(response.getEntity());
     }
 
     /**
@@ -166,7 +214,10 @@ public class CustLoginTeacherValue {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        new CustLoginTeacherValue().custLogin("120522119", "120522119");
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        new CustLoginTeacherValue().custLogin("2012001086", "131452100");
+//        System.out.println("213657F01F97ABB3F3A5224304A7B7D0".length());
+
     }
+
 }
